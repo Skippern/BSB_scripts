@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Start downloading ODBL compatible RNC maps of the world"
 
