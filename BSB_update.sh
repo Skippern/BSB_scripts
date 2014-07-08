@@ -5,10 +5,16 @@ set -e
 echo "Downloading ODBL compatible RNC maps of the world"
 
 TMPDIR=`mktemp -d`
-BSBDIR='~/maps/BSB/'
+# BSBDIR needs +6.7G
+BSBDIR='~/maps/BSB'
+# CACHEDIR needs +3.4G
 CACHEDIR='~/maps/cache'
 
-mkdir -p $BSBDIR/{BR,AR,US,NZ} $CACHEDIR
+mkdir -p $BSBDIR/BR \
+	$BSBDIR/AR \
+	$BSBDIR/US \
+	$BSBDIR/NZ \
+	$CACHEDIR
 
 trap 'rm -rf "$TMPDIR"' 0
 trap "exit 2" 1 2 3 15
@@ -20,7 +26,7 @@ wget -q http://www.mar.mil.br/dhn/chm/box-cartas-raster/raster_disponiveis.html 
 
 for i in `cat $TMPDIR/files.txt`; do
 	echo "Working with BR: $i"
-	wget -Nq http://www.mar.mil.br/dhn/chm/box-cartas-raster/cartas/$i -P $CACHEDIR
+	wget -Nq http://www.mar.mil.br/dhn/chm/box-cartas-raster/cartas/$i -P $CACHEDIR || true
 	if [ -s $CACHEDIR/$i ]; then
 		unzip -qjoC $CACHEDIR/$i \*.BSB \*.KAP -d $BSBDIR/BR
 	fi
@@ -40,8 +46,14 @@ for i in `cat $TMPDIR/files.txt`; do
 	echo "Working with AR: $i"
 	wget -Nq http://www.hidro.gob.ar/cartas/BSB/$i -P $CACHEDIR
 	if [ -s $CACHEDIR/$i ]; then
-		# the files are actually RAR
-		unrar e -ep -o+ -inul $CACHEDIR/$i \*.BSB \*.KAP $BSBDIR/AR
+		# all files have a ZIP extension, but some are actually RAR
+		if file $CACHEDIR/$i | grep -q "RAR archive"; then
+			unrar x -ep -o+ -inul $CACHEDIR/$i \*.BSB \*.KAP $BSBDIR/AR
+		elif file $CACHEDIR/$i | grep -q "Zip archive"; then
+			unzip -qjoC $CACHEDIR/$i \*.BSB \*.KAP -d $BSBDIR/AR
+		else
+			echo "Unknown file type: $CACHEDIR/$i" >&2
+		fi
 	fi
 done
 rm $TMPDIR/files.txt
@@ -50,9 +62,9 @@ rm $TMPDIR/files.txt
 
 # ~2.9G
 wget -Nq http://www.charts.noaa.gov/RNCs/All_RNCs.zip -P $CACHEDIR
-if [ -s $CACHEDIR/All_RNCs.zip]; then
+if [ -s $CACHEDIR/All_RNCs.zip ]; then
 	echo "Working with US: All_RNCs.zip"
-	unzip -qjoC $CACHEDIR/$i \*.BSB \*.KAP -d $BSBDIR/US
+	unzip -qjoC $CACHEDIR/All_RNCs.zip \*.BSB \*.KAP -d $BSBDIR/US
 fi
 
 # New Zealand (NZ) is of compatible license (CC-BY) http://www.linz.govt.nz/hydro/charts/digital-charts/nzmariner
