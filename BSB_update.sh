@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 echo "Start downloading ODBL compatible RNC maps of the world"
 
 HOMEDIR='/Users/skippern/Documents/Maps/tmp/'
