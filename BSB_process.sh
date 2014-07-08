@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 export MAGICK_HOME="$HOME/ImageMagick-6.8.8"
 export PATH="$MAGICK_HOME/bin:$PATH"
@@ -59,7 +59,7 @@ for i in `cat D*`; do echo $i > tmp
 	i=`cat tmp | sed '/\/\//s//\//'`
 	head -n 15 $i | grep KNP | sed '/KNP\/SC=/s///' | sed '/,/s// /' > tmp
 	tempscale=`cat tmp | grep -o "^[0-9]*"`
-	printf -v scale "%09d" $tempscale
+	scale='$(printf "%09d" $tempscale)'
 	echo "$i" >> S$scale.txt
 done
 
@@ -99,24 +99,24 @@ for i in `cat ../Process.txt`; do scale=`head -n 15 $i | grep KNP | sed '/KNP\/S
 #	fi
 	#sleep 0.1
 	count=`find . -iname \*png | wc -l | sed '/   /s///' | sed '/  /s///' | sed '/ /s///' | sed '/ /s///'`
-	if [ "$count" == "0" ]; then
+	if [ "$count" = "0" ]; then
 		python ../tilers_tools/gdal_tiler.py --tps -r -s $TILEZOOM -p xyz $i -t $TMPDIR
 	fi
 	count=`find . -iname \*png | wc -l | sed '/   /s///' | sed '/  /s///' | sed '/ /s///' | sed '/ /s///'`
-	if [ "$count" == "0" ]; then
+	if [ "$count" = "0" ]; then
 		python ../tilers_tools/gdal_tiler.py -r -s $TILEZOOM -p xyz $i -t $TMPDIR
 	fi
 	count=`find . -iname \*png | wc -l | sed '/   /s///' | sed '/  /s///' | sed '/ /s///' | sed '/ /s///'`
-	if [ "$count" == "0" ]; then
+	if [ "$count" = "0" ]; then
 		python ../tilers_tools/gdal_tiler.py -s $TILEZOOM -p xyz $i -t $TMPDIR
 	fi
 	count=`find . -iname \*png | wc -l | sed '/   /s///' | sed '/  /s///' | sed '/ /s///' | sed '/ /s///'`
-	if [ "$count" == "0" ]; then
+	if [ "$count" = "0" ]; then
 		python ../tilers_tools/gdal_tiler.py -tps -r -s -p xyz $i -t $TMPDIR
 	fi
 	#sleep 0.1
 	count=`find . -iname \*png | wc -l | sed '/   /s///' | sed '/  /s///' | sed '/ /s///' | sed '/ /s///'`
-	if [ "$count" == "0" ]; then
+	if [ "$count" = "0" ]; then
 		# If we get here, the map needs to be processed manually
 		echo "Adding to queue for manual processing: $i"
 		echo "$i" >> ../ToProcessManualy.txt
@@ -139,8 +139,8 @@ for i in `cat ../Process.txt`; do scale=`head -n 15 $i | grep KNP | sed '/KNP\/S
 		if [ -d "$j" ]; then
 			newcount=`find $j -iname \*png | wc -l | sed '/   /s///' | sed '/  /s///' | sed '/ /s///' | sed '/ /s///'`
 			echo ""
-			printf -v x "%02d" $j
-			printf -v mycount "%04d" $newcount
+			x='$(printf "%02d" $j)'
+			mycount='$(printf "%04d" $newcount)'
 			echo -n " ($mycount) Processing $x "
 			#sleep 0.2
 			for k in $j/*; do for l in $k/*; do if [ -e "$l" ]; then
