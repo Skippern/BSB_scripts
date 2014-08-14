@@ -6,9 +6,9 @@ echo "Downloading ODBL compatible RNC maps of the world"
 
 TMP=`mktemp -d ${TMPDIR:-/tmp}/tmp.XXXXXXXXXX`
 # BSBDIR needs +6.7G
-BSBDIR='~/maps/BSB'
+BSBDIR='/fullpath/maps/BSB'
 # CACHEDIR needs +3.4G
-CACHEDIR='~/maps/cache'
+CACHEDIR='/fullpath/maps/cache'
 
 # TODO: needs to clean old and unused files under CACHEDIR
 
