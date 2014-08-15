@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # set -ex to have a verbose run
-set -ex
+set -e
 
 SHELL='/bin/bash'
 BSBDIR='/fullpath/maps/BSB'
 
-# needs +19G
+# needs +13G
 export TILEDIR='/fullpath/maps/RNC'
 # needs tiler-tools ≥ e6afc5b1415d (≥ Jul 24 2014)
 export TILER='/fullpath/maps/tilers_tools/gdal_tiler.py'
