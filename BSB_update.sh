@@ -1,11 +1,11 @@
 #!/bin/sh
 
-set -e
+#set -e
 
 echo "Start downloading ODBL compatible RNC maps of the world"
 
-HOMEDIR='/Users/skippern/Documents/Maps/tmp/'
-BSBDIR='/Users/skippern/Documents/Maps/BSB/'
+HOMEDIR=$HOME/Documents/Maps/tmp/
+BSBDIR=$HOME/Documents/Maps/BSB/
 
 mkdir $HOMEDIR 2>/dev/null
 
@@ -37,7 +37,7 @@ for i in `cat ../BR.txt`; do echo "Working with BR $i"
 	curl -# -G -f -C - http://www.mar.mil.br/dhn/chm/cartas/download/cartasbsb/$i -o "BR$i"
 	if [ -e BR$i ]; then
 		unzip -Co BR$i \*.BSB -d .
-		unzip -Co BR$i \*.KAP -d .	
+		unzip -Co BR$i \*.KAP -d .
 		bsb=`find $HOMEDIR -iname \*BSB`
 		echo Chart name: `cat $bsb | grep "CHT/NA" | tr ',' '\n' | sed '/CHT\/NA=/s///' | head -n 1`
 		echo "Have $i"
@@ -76,8 +76,8 @@ fi
 for i in `cat ../AR.txt` ; do echo "Working with AR $i"
 	curl -# -G -f -C - http://www.hidro.gob.ar/Nautica/BSB/$i -o "AR$i"
 	if [ -e AR$i ]; then
-		unzip -Co AR$i \*.BSB -d . 
-		unzip -Co AR$i \*.KAP -d . 
+		unzip -Co AR$i \*.BSB -d .
+		unzip -Co AR$i \*.KAP -d .
 #		sleep 1.5
 		bsb=`find $HOMEDIR -iname \*BSB`
 		echo Chart name: `cat $bsb | grep "CHT/NA" | tr ',' '\n' | sed '/CHT\/NA=/s///' | head -n 1`
@@ -94,7 +94,7 @@ for i in `cat ../AR.txt` ; do echo "Working with AR $i"
 	for f in `find . -type d`; do cd "$HOMEDIR/$f"
 		mv *BSB $BSBDIR/AR 2>/dev/null
 		mv *KAP $BSBDIR/AR 2>/dev/null
-		cd "$HOMEDIR" 
+		cd "$HOMEDIR"
 	done
 done
 
@@ -139,7 +139,7 @@ for i in `cat ../US.txt`; do echo "Working with US $i"
 	for f in `find . -type d`; do cd "$HOMEDIR/$f"
 		mv *BSB $BSBDIR/US 2>/dev/null
 		mv *KAP $BSBDIR/US 2>/dev/null
-		cd "$HOMEDIR" 
+		cd "$HOMEDIR"
 	done
 done
 
