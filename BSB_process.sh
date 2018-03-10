@@ -91,7 +91,7 @@ oldscale=42
 echo "We have a process queue, start processing"
 for i in `cat ../Process.txt`; do scale=`head -n 15 $i | grep KNP | sed '/KNP\/SC=/s///' | sed '/,/s// /' | grep -o "^[0-9]*"`
 	echo "1:$scale"
-	area=`echo $i | sed '/\/home\/skippern\/Documents\/Maps\/BSB\//s///' | tr '/' '\n' |grep -v KAP`
+	area=`echo $i | sed '/\/home\/skippern\/Documents\/Maps\/BSB\//s///' | tr '/' '\n' |grep -v KAP | grep -v kap`
 #	echo "area=($area) from $i"
 #	exit 0
 #	if [ "$scale" != "$oldscale" ]; then
