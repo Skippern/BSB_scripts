@@ -13,6 +13,7 @@ TILERS_TOOLS=/opt/src/tilers-tools/tilers_tools/tiler.py
 TILEZOOM=
 #TILEZOOM='-z 1'
 #TILEZOOM='-z 0,1,2,3,4,5'
+#TILEZOOM='-z 6,7'
 
 if [ "$1" != "" ]; then
 #	echo ARG 1 is $1

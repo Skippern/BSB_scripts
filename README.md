@@ -12,7 +12,7 @@ Downgrading python-gdal
 ==========
 
 On ubuntu-linux
-`apt showpkg python-gdal` to get version string correctly
+`apt-cache showpkg python-gdal` to get version string correctly
 
 `sudo apt install python-gdal=<version 1 string>` downgrades the package
 
