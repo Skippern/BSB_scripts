@@ -41,7 +41,7 @@ rm -rf *
 if [ ! -e "../Process.txt" ]; then
 	echo "Need to build process queue"
 
-for i in `find $BSBDIR | grep KAP`; do echo $i > tmp
+for i in `find $BSBDIR | grep -e "kap" -e "KAP"`; do echo $i > tmp
 	i=`cat tmp | sed '/\/\//s//\//'`
 	head -n 15 $i | grep NTM  | sed '/NTM\/NE=/s///' | sed '/,/s// /' > tmp2
 	cat tmp2 | grep -o "^[0-9]* " > NTM
@@ -158,7 +158,7 @@ for i in `cat ../Process.txt`; do scale=`head -n 15 $i | grep KNP | sed '/KNP\/S
 #				convert topW.png -fuzz 10% -transparent black top.png
 #				mv top.png topW.png 2>/dev/null
 				convert topW.png -fuzz 10% -transparent white top.png
-				mv topW.png top.png 2>/dev/null
+#				mv topW.png top.png 2>/dev/null
 				# Merge tiles
 #				if [ -d $TILEDIR/$area/$k ]
 #				then
@@ -175,15 +175,17 @@ for i in `cat ../Process.txt`; do scale=`head -n 15 $i | grep KNP | sed '/KNP\/S
 					# Download from tileserver
 					ret=","
 #					echo -n "Downloading $l from tile server"
-					curl -# -G -f http://a.tile.openstreetmap.org/$l -o "bottom.png" 2>/dev/null
-					dl=`expr $dl + 1`
+#					curl -# -G -f http://a.tile.openstreetmap.org/$l -o "bottom.png" 2>/dev/null
+#					dl=`expr $dl + 1`
 				fi
 				if [ ! -e bottom.png ]; then
 					# File does not exist in repo or tile server, create from dummy
 					ret="+"
 					cp $TILEDIR/0.png bottom.png
 					new=`expr $new + 1`
-					dl=`expr $dl - 1`
+					if [ $dl -gt 0 ]; then
+						dl=`expr $dl - 1`
+					fi
 				fi
 				echo -n $ret
 				#sleep 0.1
