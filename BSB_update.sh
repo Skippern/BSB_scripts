@@ -101,19 +101,21 @@ done
 echo "USA (US) is of compatible license (PD) http://www.charts.noaa.gov/RNCs"
 
 if  [ ! -e ../US.txt ]; then
-	curl -# -G -f http://www.charts.noaa.gov/RNCs/ -o "US_Chart_List.html" 2>/dev/null
+	curl -# -G -f http://www.charts.noaa.gov/RNCs/RNCs.shtml -o "US_Chart_List.html" 2>/dev/null
 	touch US1.txt US2.txt US3.txt
 	cat US_Chart_List.html | sed '/<a href=\"/s///' | sed '/\">/s//   /' | sed '/<\/a>/s///' | grep zip | grep -o "^[a-zA-Z0-9]*_[a-zA-Z0-9]*.zip" | sort > US1.txt
 	cat US_Chart_List.html | sed '/<a href=\"/s///' | sed '/\">/s//   /' | sed '/<\/a>/s///' | grep zip | grep -o "^[a-zA-Z0-9]*.zip" | sort > US2.txt
 	cat US_Chart_List.html | sed '/<a href=\"/s///' | sed '/\">/s//   /' | sed '/<\/a>/s///' | grep zip | grep -o "^[0-9]*.zip" | sort > US3.txt
 	cat US1.txt US2.txt US3.txt | sort -g | uniq > ../US.txt
 	rm US1.txt US2.txt US3.txt 2>/dev/null
-	cat ../US.txt | grep -v Patch > tmp
-	cat tmp > ../US.txt
-	cat ../US.txt | grep -v Base > tmp
-	cat tmp > ../US.txt
-	cat ../US.txt | grep -v All > tmp
-	cat tmp > ../US.txt
+#	cat ../US.txt | grep -v Patch > tmp
+#	cat tmp > ../US.txt
+#	cat ../US.txt | grep -v Base > tmp
+#	cat tmp > ../US.txt
+#	cat ../US.txt | grep -v All > tmp
+#	cat tmp > ../US.txt
+#	cat ../US.txt | grep -v All_RNCs > tmp
+#	cat tmp > ../US.txt
 	rm tmp 2>/dev/null
 	rm *html 2>/dev/null
 fi
