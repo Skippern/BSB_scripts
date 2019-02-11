@@ -60,6 +60,9 @@ for i in `cat ../BR.txt`; do echo "Working with BR $i"
 		rm -rf $j
 	fi
 	done
+	if [ `cat ../BR.txt | wc -l` -lt 1 ]; then
+		rm ../BR.txt
+	fi
 done
 
 rm BR_chart_list.html 2>/dev/null
@@ -70,11 +73,11 @@ if [ ! -e ../AR.txt ]; then
 	curl -# -G -f -C - http://www.hidro.gob.ar/Nautica/Raster.asp -o "AR_chart_list_page0.html" 2>/dev/null
 	for i in `seq 1 10`; do curl -# -G -f -C - http://www.hidro.gob.ar/Nautica/CNRaster.asp?r=$i -o "AR_chart_list_page$i.html" 2>/dev/null ; done
 #	cp AR*html .. 2>/dev/null
-	cat AR*html | tr '"' '\n' | grep BSB/ | sed '/BSB\//s///' | sort | uniq > ../AR.txt
+	cat AR*html | tr '"' '\n' | grep BSB/ | sed '/BSB\//s///' | sed '/\//s/\n//' | grep zip | sort | uniq > ../AR.txt
 	rm -rf AR*html 2>/dev/null
 fi
 for i in `cat ../AR.txt` ; do echo "Working with AR $i"
-	curl -# -G -f -C - http://www.hidro.gob.ar/Nautica/BSB/$i -o "AR$i"
+	curl -# -G -f -C - http://www.hidro.gob.ar/cartas/BSB/$i -o "AR$i" 2>/dev/null
 	if [ -e AR$i ]; then
 		unzip -Co AR$i \*.BSB -d .
 		unzip -Co AR$i \*.KAP -d .
@@ -96,12 +99,17 @@ for i in `cat ../AR.txt` ; do echo "Working with AR $i"
 		mv *KAP $BSBDIR/AR 2>/dev/null
 		cd "$HOMEDIR"
 	done
+	if [ `cat ../AR.txt | wc -l` -lt 1 ]; then
+		rm ../AR.txt
+	fi
 done
 
 echo "USA (US) is of compatible license (PD) http://www.charts.noaa.gov/RNCs"
 
 if  [ ! -e ../US.txt ]; then
-	curl -# -G -f http://www.charts.noaa.gov/RNCs/RNCs.shtml -o "US_Chart_List.html" 2>/dev/null
+#	curl -# -G -f https://www.charts.noaa.gov/RNCs/RNCs.shtml -o "US_Chart_List.html" 2>/dev/null
+	wget --no-check-certificate -o "US_Chart_list.html" https://www.charts.noaa.gov/RNCs/RNCs.shtml 2>/dev/null
+	mv RNCs.shtml US_Chart_List.html
 	touch US1.txt US2.txt US3.txt
 	cat US_Chart_List.html | sed '/<a href=\"/s///' | sed '/\">/s//   /' | sed '/<\/a>/s///' | grep zip | grep -o "^[a-zA-Z0-9]*_[a-zA-Z0-9]*.zip" | sort > US1.txt
 	cat US_Chart_List.html | sed '/<a href=\"/s///' | sed '/\">/s//   /' | sed '/<\/a>/s///' | grep zip | grep -o "^[a-zA-Z0-9]*.zip" | sort > US2.txt
@@ -118,10 +126,12 @@ if  [ ! -e ../US.txt ]; then
 #	cat tmp > ../US.txt
 	rm tmp 2>/dev/null
 	rm *html 2>/dev/null
+	echo "US.txt has $(cat ../US.txt | wc -l) files to download"
 fi
 
 for i in `cat ../US.txt`; do echo "Working with US $i"
-	curl -# -G -f -C - http://www.charts.noaa.gov/RNCs/$i -o "US$i"
+#	curl -# -G -f -C - http://www.charts.noaa.gov/RNCs/$i -o "US$i"
+	wget --no-check-certificate -o "US$i" https://www.charts.noaa.gov/RNCs/$i
 	if [ -e US$i ]; then
 		unzip -Co US$i \*.BSB -d .
 		unzip -Co US$i \*.KAP -d .
@@ -143,6 +153,9 @@ for i in `cat ../US.txt`; do echo "Working with US $i"
 		mv *KAP $BSBDIR/US 2>/dev/null
 		cd "$HOMEDIR"
 	done
+	if [ `cat ../US.txt -lt 1` ]; then
+		rm ../US.txt
+	fi
 done
 
 rmdir BSB_ROOT 2>/dev/null
@@ -158,10 +171,10 @@ if  [ ! -e ../NZ.txt ]; then
 	rm NZ_charts.html 2>/dev/null
 fi
 for i in `cat ../NZ.txt`; do echo "Working with NZ $i"
-	curl -# -G -f -C - http://www.linz.govt.nz/sites/default/files/docs/hydro/charts/digital/nzmariner/$i -o "NZ$i"
+#	curl -# -G -f -C - http://www.linz.govt.nz/sites/default/files/docs/hydro/charts/digital/nzmariner/$i -o "NZ$i"
 	if [ -e NZ$i ]; then
-		unzip -Co NZ$i \*.BSB -d .
-		unzip -Co NZ$i \*.KAP -d .
+#		unzip -Co NZ$i \*.BSB -d .
+#		unzip -Co NZ$i \*.KAP -d .
 		bsb=`find $HOMEDIR -iname \*BSB`
 		echo Chart name: `cat $bsb | grep "CHT/NA" | tr ',' '\n' | sed '/CHT\/NA=/s///' | head -n 1`
 		echo "Have $i"
@@ -179,6 +192,9 @@ for i in `cat ../NZ.txt`; do echo "Working with NZ $i"
 		mv *KAP $BSBDIR/NZ 2>/dev/null
 		cd "$HOMEDIR"
 	done
+	if [ `cat ../NZ.txt | wc -l` -lt 1 ]; then
+		rm ../NZ.txt
+	fi
 done
 
 echo "Chile (CL) http://www.shoa.cl/pagnueva/comelec.html unknown package format"
