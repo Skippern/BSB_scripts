@@ -225,7 +225,7 @@ bsb_proc() {
 	oldscale=42
 	echo "We have a process queue, start processing"
 	for i in `cat ../Process.txt | grep -e kap -e KAP`; do scale=`head -n 15 $i | grep KNP | sed '/KNP\/SC=/s///' | sed '/,/s// /' | grep -o "^[0-9]*"`
-		echo "1:$scale"
+		echo "Chart Scale is 1:$scale"
 		area=`echo $i | sed '/\/home\/skippern\/Documents\/Maps\/BSB\//s///' | tr '/' '\n' |grep -v KAP | grep -v kap`
 		count=`find . -iname \*png | wc -l | sed '/   /s///' | sed '/  /s///' | sed '/ /s///' | sed '/ /s///'`
 		if [ "$count" == "0" ]; then
